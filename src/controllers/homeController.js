@@ -1,17 +1,16 @@
-const getHomepage = (req,res) =>{
-    res.send("Hello World with TommyHo & nodemon!");
-}
+const connection = require("../config/database");
 
-const getABC = (req,res) =>{
-    res.send("Check ABC!");
-}
-
-const getTommy = (req,res) =>{
-    res.render("sample.ejs");
-}
-
-module.exports = {
-    getHomepage,
-    getABC,
-    getTommy
+const getHomepage = (req, res) => {
+  //test connection
+  return res.render('home.ejs')
 };
+
+const getABC = (req, res) => {
+  res.send("Check ABC!");
+};
+
+const getTommy = (req, res) => {
+  res.render("sample.ejs");
+};
+
+module.exports = { getHomepage, getABC, getTommy };
