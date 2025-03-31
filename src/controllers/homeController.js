@@ -1,6 +1,10 @@
 const connection = require("../config/database");
 const { get } = require("../routes/web");
-const { getAllUsers, getUserById } = require("../services/CRUDservice");
+const {
+  getAllUsers,
+  getUserById,
+  updateUserById,
+} = require("../services/CRUDservice");
 
 const getHomepage = async (req, res) => {
   //test connection
@@ -42,6 +46,24 @@ const getUpdatePage = async (req, res) => {
   return res.render("edit.ejs", { userEdit: user }); // x-<-y
 };
 
+const postUpdateUser = async (req, res) => {
+  let email = req.body.email;
+  let name = req.body.name;
+  let city = req.body.city;
+  let userId = req.body.userId;
+
+  try {
+    // Cập nhật thông tin người dùng trong database
+    await updateUserById(email, name, city, userId);
+
+    // Chuyển hướng về trang chủ sau khi cập nhật thành công
+    return res.redirect("/");
+  } catch (err) {
+    console.error(">>> Error updating user:", err);
+    return res.status(500).send("An error occurred while updating the user.");
+  }
+};
+
 module.exports = {
   getCreatePage,
   getHomepage,
@@ -49,4 +71,5 @@ module.exports = {
   getTommy,
   postCreateUser,
   getUpdatePage,
+  postUpdateUser,
 };
