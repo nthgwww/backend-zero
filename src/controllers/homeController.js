@@ -1,14 +1,12 @@
 const connection = require("../config/database");
-const { get } = require("../routes/web");
 const {
   getAllUsers,
   getUserById,
   updateUserById,
+  deleteUserById,
 } = require("../services/CRUDservice");
 
 const getHomepage = async (req, res) => {
-  //test connection
-  // let [results, fields] = await connection.query('SELECT * FROM Users')
   let results = await getAllUsers(); // Lấy danh sách người dùng từ database
   return res.render("home.ejs", { listUsers: results });
 };
@@ -22,18 +20,23 @@ const getTommy = (req, res) => {
 };
 
 const postCreateUser = async (req, res) => {
-  let email = req.body.email; // Lấy dữ liệu từ form
+  let email = req.body.email;
   let name = req.body.name;
   let city = req.body.city;
-  console.log(">>> check data", email, name, city); // In ra dữ liệu để kiểm tra
 
-  let [results, fields] = await connection.query(
-    ` INSERT INTO Users (email, name, city) 
-    VALUES (?, ?, ?) `,
-    [email, name, city]
-  );
-  console.log(">>> check results", results);
-  res.send("Create user succeed!");
+  try {
+    await connection.query(
+      `INSERT INTO Users (email, name, city) VALUES (?, ?, ?)`,
+      [email, name, city]
+    );
+    return res.render("home.ejs", {
+      listUsers: await getAllUsers(),
+      successMessage: "User created successfully!",
+    });
+  } catch (err) {
+    console.error(">>> Error creating user:", err);
+    return res.status(500).send("An error occurred while creating the user.");
+  }
 };
 
 const getCreatePage = (req, res) => {
@@ -43,7 +46,7 @@ const getCreatePage = (req, res) => {
 const getUpdatePage = async (req, res) => {
   const userId = req.params.id;
   let user = await getUserById(userId); // Lấy thông tin người dùng từ database
-  return res.render("edit.ejs", { userEdit: user }); // x-<-y
+  return res.render("edit.ejs", { userEdit: user });
 };
 
 const postUpdateUser = async (req, res) => {
@@ -53,14 +56,29 @@ const postUpdateUser = async (req, res) => {
   let userId = req.body.userId;
 
   try {
-    // Cập nhật thông tin người dùng trong database
     await updateUserById(email, name, city, userId);
-
-    // Chuyển hướng về trang chủ sau khi cập nhật thành công
-    return res.redirect("/");
+    return res.render("home.ejs", {
+      listUsers: await getAllUsers(),
+      successMessage: "User updated successfully!",
+    });
   } catch (err) {
     console.error(">>> Error updating user:", err);
     return res.status(500).send("An error occurred while updating the user.");
+  }
+};
+
+const postDeleteUser = async (req, res) => {
+  const userId = req.body.userId;
+
+  try {
+    await deleteUserById(userId);
+    return res.render("home.ejs", {
+      listUsers: await getAllUsers(),
+      successMessage: "User deleted successfully!",
+    });
+  } catch (err) {
+    console.error(">>> Error deleting user:", err);
+    return res.status(500).send("An error occurred while deleting the user.");
   }
 };
 
@@ -72,4 +90,5 @@ module.exports = {
   postCreateUser,
   getUpdatePage,
   postUpdateUser,
+  postDeleteUser,
 };
