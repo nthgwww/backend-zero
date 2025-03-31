@@ -35,10 +35,18 @@ const getCreatePage = (req, res) => {
   return res.render("create.ejs");
 };
 
+const getUpdatePage = (req, res) => {
+  const userId = req.params.id;
+  console.log(">>> check req.params", req.params, userId);
+   // Lấy id từ params
+  return res.render("edit.ejs");
+};
+
 module.exports = {
   getCreatePage,
   getHomepage,
   getABC,
   getTommy,
   postCreateUser,
+  getUpdatePage
 };
