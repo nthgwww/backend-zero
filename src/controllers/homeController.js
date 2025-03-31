@@ -1,11 +1,12 @@
 const connection = require("../config/database");
-const { getAllUsers } = require("../services/CRUDservice");
+const { get } = require("../routes/web");
+const { getAllUsers, getUserById } = require("../services/CRUDservice");
 
 const getHomepage = async (req, res) => {
   //test connection
   // let [results, fields] = await connection.query('SELECT * FROM Users')
   let results = await getAllUsers(); // Lấy danh sách người dùng từ database
-  return res.render("home.ejs", {listUsers: results});
+  return res.render("home.ejs", { listUsers: results });
 };
 
 const getABC = (req, res) => {
@@ -24,22 +25,21 @@ const postCreateUser = async (req, res) => {
 
   let [results, fields] = await connection.query(
     ` INSERT INTO Users (email, name, city) 
-    VALUES (?, ?, ?) `,[email, name, city]
+    VALUES (?, ?, ?) `,
+    [email, name, city]
   );
   console.log(">>> check results", results);
-  res.send('Create user succeed!');
-  
+  res.send("Create user succeed!");
 };
 
 const getCreatePage = (req, res) => {
   return res.render("create.ejs");
 };
 
-const getUpdatePage = (req, res) => {
+const getUpdatePage = async (req, res) => {
   const userId = req.params.id;
-  console.log(">>> check req.params", req.params, userId);
-   // Lấy id từ params
-  return res.render("edit.ejs");
+  let user = await getUserById(userId); // Lấy thông tin người dùng từ database
+  return res.render("edit.ejs", { userEdit: user }); // x-<-y
 };
 
 module.exports = {
@@ -48,5 +48,5 @@ module.exports = {
   getABC,
   getTommy,
   postCreateUser,
-  getUpdatePage
+  getUpdatePage,
 };

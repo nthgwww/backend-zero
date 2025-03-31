@@ -6,25 +6,43 @@
     <link rel="stylesheet" href="/css/style.css" />
   </head>
   <body>
+    <!-- <%= JSON.stringify(userEdit) %> -->
     <div class="topnav">
-      <a  href="/">Home</a>
-      <a href="/create" >Create Users</a>
+      <a href="/">Home</a>
+      <a href="/create">Create Users</a>
     </div>
 
     <div class="form-add-new">
       <form action="/create-user" method="POST">
-        <fieldset>          <legend>Update a User</legend>
+        <fieldset>
+          <legend>Update a User</legend>
           <div class="input-group">
             <label>Email:</label>
-            <input type="text" id="emailId" name="email" />
+            <input
+              type="text"
+              id="emailId"
+              name="email"
+              value="<%= userEdit.email %>"
+            />
           </div>
           <div class="input-group">
             <label>Name:</label>
-            <input type="text" id="name" name="name" />
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value="<%= userEdit.name %>"
+            />
+            />
           </div>
           <div class="input-group">
             <label>City:</label>
-            <input type="text" id="city" name="city" />
+            <input
+              type="text"
+              id="city"
+              name="city"
+              value="<%= userEdit.city %>"
+            />
           </div>
           <div>
             <button type="submit">Save</button>
