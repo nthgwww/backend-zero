@@ -4,7 +4,7 @@ const {
   getABC,
   getTommy,
   postCreateUser,
-  getCreatePage
+  getCreatePage,
 } = require("../controllers/homeController");
 const router = express.Router();
 
