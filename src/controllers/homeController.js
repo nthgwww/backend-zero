@@ -13,9 +13,29 @@ const getTommy = (req, res) => {
   res.render("sample.ejs");
 };
 
-const postCreateUser = (req, res) => {
-  console.log(">>> check req.body", req.body); // Kiểm tra dữ liệu từ form
-  res.send("create new user");
+const postCreateUser = async (req, res) => {
+  let email = req.body.email; // Lấy dữ liệu từ form
+  let name = req.body.name;
+  let city = req.body.city;
+  console.log(">>> check data", email, name, city); // In ra dữ liệu để kiểm tra
+
+  let [results, fields] = await connection.query(
+    ` INSERT INTO Users (email, name, city) 
+    VALUES (?, ?, ?) `,[email, name, city]
+  );
+  console.log(">>> check results", results);
+  res.send('Create user succeed!');
+  
 };
 
-module.exports = { getHomepage, getABC, getTommy, postCreateUser };
+const getCreatePage = (req, res) => {
+  return res.render("create.ejs");
+};
+
+module.exports = {
+  getCreatePage,
+  getHomepage,
+  getABC,
+  getTommy,
+  postCreateUser,
+};
